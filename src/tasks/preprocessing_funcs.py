@@ -303,6 +303,11 @@ def load_dataloaders(args):
         model = 'bert-base-uncased'
         lower_case = False
         model_name = 'BioBERT'
+    elif args.model_no == 3:
+        from ..model.BERT.tokenization_bert import BertTokenizer as Tokenizer
+        model = 'bert-base-uncased'
+        lower_case = True
+        model_name = 'MatSciBERT'
         
     if os.path.isfile("./data/%s_tokenizer.pkl" % model_name):
         tokenizer = load_pickle("%s_tokenizer.pkl" % model_name)
@@ -311,6 +316,9 @@ def load_dataloaders(args):
         logger.info("Pre-trained blanks tokenizer not found, initializing new tokenizer...")
         if args.model_no == 2:
             tokenizer = Tokenizer(vocab_file='./additional_models/biobert_v1.1_pubmed/vocab.txt',
+                                  do_lower_case=False)
+        elif args.model_no == 3:
+            tokenizer = Tokenizer(vocab_file='./additional_models/MatSciBERT/vocab.txt',
                                   do_lower_case=False)
         else:
             tokenizer = Tokenizer.from_pretrained(model, do_lower_case=False)

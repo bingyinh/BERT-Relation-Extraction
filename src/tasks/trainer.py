@@ -63,7 +63,18 @@ def train_and_fit(args):
                                           model_size='bert-base-uncased',
                                           task='classification' if args.task != 'fewrel' else 'fewrel',\
                                           n_classes_=args.num_classes)
-    
+    elif args.model_no == 3: # MatSciBERT
+        from ..model.BERT.modeling_bert import BertModel, BertConfig
+        model = 'bert-base-uncased'
+        lower_case = False
+        model_name = 'MatSciBERT'
+        config = BertConfig.from_pretrained('./additional_models/MatSciBERT/config.json')
+        net = BertModel.from_pretrained(pretrained_model_name_or_path='./additional_models/MatSciBERT/pytorch_model.bin',
+                                          config=config,
+                                          force_download=False, \
+                                          model_size='bert-base-uncased',
+                                          task='classification' if args.task != 'fewrel' else 'fewrel',\
+                                          n_classes_=args.num_classes)
     tokenizer = load_pickle("%s_tokenizer.pkl" % model_name)
     net.resize_token_embeddings(len(tokenizer))
     e1_id = tokenizer.convert_tokens_to_ids('[E1]')
@@ -84,7 +95,10 @@ def train_and_fit(args):
     elif args.model_no == 2:
         unfrozen_layers = ["classifier", "pooler", "encoder.layer.11", \
                            "classification_layer", "blanks_linear", "lm_linear", "cls"]
-        
+    elif args.model_no == 3:
+        unfrozen_layers = ["classifier", "pooler", "encoder.layer.11", \
+                           "classification_layer", "blanks_linear", "lm_linear", "cls"]
+
     for name, param in net.named_parameters():
         if not any([layer in name for layer in unfrozen_layers]):
             print("[FROZE]: %s" % name)
