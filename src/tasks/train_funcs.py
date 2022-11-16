@@ -13,7 +13,7 @@ from ..misc import save_as_pickle, load_pickle
 from seqeval.metrics import precision_score, recall_score, f1_score
 import logging
 from tqdm import tqdm
-
+from sklearn_crfsuite.metrics import flat_precision_score, flat_recall_score, flat_f1_score
 logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', \
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 logger = logging.getLogger(__file__)
@@ -99,9 +99,12 @@ def evaluate_results(net, test_loader, pad_id, cuda):
     accuracy = acc/(i + 1)
     results = {
         "accuracy": accuracy,
-        "precision": precision_score(true_labels, out_labels),
-        "recall": recall_score(true_labels, out_labels),
-        "f1": f1_score(true_labels, out_labels)
+        # "precision": precision_score(true_labels, out_labels),
+        # "recall": recall_score(true_labels, out_labels),
+        # "f1": f1_score(true_labels, out_labels)
+        "precision": flat_precision_score(true_labels, out_labels, average='micro'),
+        "recall": flat_recall_score(true_labels, out_labels, average='micro'),
+        "f1": flat_f1_score(true_labels, out_labels, average='micro')
     }
     logger.info("***** Eval results *****")
     for key in sorted(results.keys()):
