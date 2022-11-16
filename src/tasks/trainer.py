@@ -66,10 +66,22 @@ def train_and_fit(args):
     elif args.model_no == 3: # MatSciBERT
         from ..model.BERT.modeling_bert import BertModel, BertConfig
         model = 'bert-base-uncased'
-        lower_case = False
+        lower_case = True
         model_name = 'MatSciBERT'
         config = BertConfig.from_pretrained('./additional_models/MatSciBERT/config.json')
         net = BertModel.from_pretrained(pretrained_model_name_or_path='./additional_models/MatSciBERT/pytorch_model.bin',
+                                          config=config,
+                                          force_download=False, \
+                                          model_size='bert-base-uncased',
+                                          task='classification' if args.task != 'fewrel' else 'fewrel',\
+                                          n_classes_=args.num_classes)
+    elif args.model_no == 4: # MatBERT
+        from ..model.BERT.modeling_bert import BertModel, BertConfig
+        model = 'bert-base-uncased'
+        lower_case = True
+        model_name = 'MatSciBERT'
+        config = BertConfig.from_pretrained('./additional_models/MatBERT/config.json')
+        net = BertModel.from_pretrained(pretrained_model_name_or_path='./additional_models/MatBERT/pytorch_model.bin',
                                           config=config,
                                           force_download=False, \
                                           model_size='bert-base-uncased',
@@ -96,6 +108,9 @@ def train_and_fit(args):
         unfrozen_layers = ["classifier", "pooler", "encoder.layer.11", \
                            "classification_layer", "blanks_linear", "lm_linear", "cls"]
     elif args.model_no == 3:
+        unfrozen_layers = ["classifier", "pooler", "encoder.layer.11", \
+                           "classification_layer", "blanks_linear", "lm_linear", "cls"]
+    elif args.model_no == 4:
         unfrozen_layers = ["classifier", "pooler", "encoder.layer.11", \
                            "classification_layer", "blanks_linear", "lm_linear", "cls"]
 
