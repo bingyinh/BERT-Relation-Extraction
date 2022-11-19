@@ -79,7 +79,7 @@ def train_and_fit(args):
         from ..model.BERT.modeling_bert import BertModel, BertConfig
         model = 'bert-base-uncased'
         lower_case = True
-        model_name = 'MatSciBERT'
+        model_name = 'MatBERT'
         config = BertConfig.from_pretrained('./additional_models/MatBERT/config.json')
         net = BertModel.from_pretrained(pretrained_model_name_or_path='./additional_models/MatBERT/pytorch_model.bin',
                                           config=config,
